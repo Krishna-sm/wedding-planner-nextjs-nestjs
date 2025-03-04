@@ -1,0 +1,19 @@
+@font-face {
+    font-family:arial ;
+    src: url(./ARIAL.TTF);
+}
+
+@font-face {
+    font-family:arial-bold ;
+    src: url(./ARIALBD.TTF);
+}
+@font-face {
+    font-family:arial-medium ;
+    src: url(./ArialMdm.ttf);
+}
+
+
+@font-face {
+    font-family:arial-black ;
+    src: url(./ARIBLK.TTF);
+}

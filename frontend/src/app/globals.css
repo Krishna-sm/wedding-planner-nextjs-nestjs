@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+/* :root {
+  --background: #ffffff;
+  --foreground: #171717;
+} */
+@theme{
+  --font-pregular : Poppins-Regular;
+  --font-pbold : Poppins-Bold;
+  --font-pblack : Poppins-Black;
+  --font-pmedium : Poppins-Medium;
+  --font-psmbold : Poppins-SemiBold;
+  --font-arial : arial;
+  --font-arialbold : arial-bold;
+  --font-arialmedium : arial-medium;
+  --font-arialblack : arial-black;
+}
+/* 
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+} */
+
+body {
+  background: whitesmoke; 
+@apply font-pregular;
+}
