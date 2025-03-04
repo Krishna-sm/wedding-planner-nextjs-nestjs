@@ -60,4 +60,12 @@ export class AuthService {
 
     }
 
+
+    async UserProfile(id:string,role:string){
+        return{
+            user:id,
+            role
+        }
+    }
+
 }
