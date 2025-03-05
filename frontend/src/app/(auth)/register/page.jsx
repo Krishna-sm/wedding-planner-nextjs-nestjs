@@ -9,30 +9,37 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 import { toast } from 'react-toastify';
 import *as yup from 'yup'
 
-const LoginPage = () => {
+const RegisterPage = () => {
 
         const [isHide,setIsHide] = useState(true)
         const [loading,setIsLoading] = useState(false)
         const router = useRouter()
 
-        const initialValues ={ 
+        const initialValues ={
+            name: '',
             email: '',
-            password: ''
+            password: '',
+            role:'' //user|admin|vendor
         }
         const validationSchema = yup.object({
+            name: yup.string() 
+             .required('Name is required'),
             email: yup.string()
              .email('Invalid email address')
              .required('Email is required'),
             password: yup.string()
              .min(8, 'Password should be at least 8 characters long')
-             .required('Password is required')
+             .required('Password is required'),
+             role: yup.string()
+             .oneOf(['user','vendor'],"user must a valid user or a vendor")
+             .required('Role is required'),
         })
         const onSubmitHandler = async(values,helpers)=>{
             try {
                 setIsLoading(true)
-                const response = await axiosClient.post("/auth/login",values)
+                const response = await axiosClient.post("/auth/register",values)
                 const data = await response.data;
-       
+      
                 toast.success(data.msg)
                 localStorage.setItem("token",data.token)
                 router.push("/")
@@ -52,7 +59,11 @@ const LoginPage = () => {
          
                 <Formik onSubmit={onSubmitHandler} validationSchema={validationSchema} initialValues={initialValues}>
                 <Form className=" w-[96%] md:w-1/2 xl:w-1/2 2xl:w-1/3 shadow border border-tertary bg-white/5 py-10 px-10 rounded-md mx-auto ">
-                 
+                        <div className="mb-3">
+                            <label htmlFor="name">Name</label>
+                            <Field type="text" id='name' name='name' className="w-full py-3 bg-transparant rounded-md border outline-none px-4 border-indigo-400 " placeholder='Enter Your Name' />
+                            <ErrorMessage className='text-sm text-red-500' component={'p'} name='name' />
+                        </div>
                         <div className="mb-3">
                             <label htmlFor="email">Email</label>
                             <Field type="text" id='email' name='email' className="w-full py-3 bg-transparant rounded-md border outline-none px-4 border-indigo-400 " placeholder='Enter Your Email' />
@@ -72,17 +83,26 @@ const LoginPage = () => {
 
                         </div>
 
-                       
+                        <div className="mb-3">
+                            <label htmlFor="role">Role</label>
+                            <Field as="select" type="text" id='role' name='role' className="w-full py-3 bg-transparant rounded-md border outline-none px-4 border-indigo-400 " >
+                                <option value="">Select Role</option>
+                                <option value="user">User</option>
+                                <option value="vendor">Vendor</option>
+                            </Field>
+                            <ErrorMessage className='text-sm text-red-500' component={'p'} name='role' />
+
+                        </div>
 
 
 
 
                         <div className="mb-3">
-                            <CustomButton className={'py-4'} type="submit" isLoading={loading} label={'Login'} />
+                            <CustomButton className={'py-4'} type="submit" isLoading={loading} label={'Register'} />
                         </div>
                         <div className="mb-3">
                             <p className="text-end text-indigo-500">
-                                Don't Have An Account ? <Link href={'/register'} className='text-indigo-600 font-psmbold'>Register</Link>
+                                Already Have An Account ? <Link href={'/login'} className='text-indigo-600 font-psmbold'>Login</Link>
                             </p>
                         </div>
                         
@@ -94,4 +114,4 @@ const LoginPage = () => {
   )
 }
 
-export default LoginPage
+export default RegisterPage

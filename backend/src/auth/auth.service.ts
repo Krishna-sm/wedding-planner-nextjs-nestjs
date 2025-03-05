@@ -62,10 +62,11 @@ export class AuthService {
 
 
     async UserProfile(id:string,role:string){
-        return{
-            user:id,
-            role
-        }
+        const user = await this.UserModel.findById(id)
+            .select("name email role -_id")
+        ;
+        console.log(user)
+        return user
     }
 
 }

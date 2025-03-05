@@ -14,6 +14,10 @@
   --font-arialbold : arial-bold;
   --font-arialmedium : arial-medium;
   --font-arialblack : arial-black;
+  --color-whitesmoke:#F5F5F5;
+  --color-primary:#21004b;
+  --color-secondary:#4b0081;
+  --color-tertary:#7e21d3;
 }
 /* 
 @theme inline {
