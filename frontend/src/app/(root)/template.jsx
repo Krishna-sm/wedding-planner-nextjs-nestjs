@@ -1,13 +1,15 @@
 "use client";
 import Link from 'next/link';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import { IoIosArrowForward } from "react-icons/io";
 
 import {MdOutlineSpaceDashboard} from 'react-icons/md'
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { SidebarSlicePath, toggleCollapse, toggleSidebar } from '../redux/slices/SidebarSlice';
+import { UserSlicePath } from '../redux/slices/UserSlice';
+import Loader from '@/components/Loader';
 
 const CustomMenuItem = ({title,link,Icon})=>{
     const pathname = usePathname()
@@ -35,7 +37,24 @@ const CustomMenuItem = ({title,link,Icon})=>{
 const RootTemplalate = ({children}) => {
 
   const {isToggle,isCollapsed} = useSelector(SidebarSlicePath)
+  const user = useSelector(UserSlicePath)
   const dispatch = useDispatch()
+  const [loading,setLoading] = useState(true)
+  const router = useRouter()
+
+  useEffect(()=>{
+    if(user && user.email){
+      setLoading(false) 
+    }else{
+      router.push("/login")
+    }
+  },[user])
+
+  if(loading){
+    return <div className='min-h-screen w-full flex items-center justify-center'>
+      <Loader/>
+    </div>
+  }
 
 
   return (
@@ -46,7 +65,7 @@ const RootTemplalate = ({children}) => {
               <Sidebar breakPoint='lg' collapsed={isCollapsed} toggled={isToggle} 
                 onBackdropClick={()=>dispatch(toggleSidebar())}
               >
-  <Menu className='min-h-screen py-10'>
+  <Menu className='min-h-screen py-10 bg-whitesmoke'>
     {/* <SubMenu label="Charts">
       <MenuItem> Pie charts </MenuItem>
       <MenuItem> Line charts </MenuItem>
@@ -62,7 +81,7 @@ const RootTemplalate = ({children}) => {
 </button>
               </aside>
 
-            <main>{children}</main>
+            <main className='w-full'>{children}</main>
             </section>
     </>
   )

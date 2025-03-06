@@ -8,6 +8,11 @@ export const SidebarSlice = createSlice({
     },
     reducers:{
         toggleSidebar:(state)=>{
+
+            if(state.isCollapsed){
+                state.isCollapsed = false; 
+            }
+
             state.isToggle =!state.isToggle
         },
         toggleCollapse:(state)=>{

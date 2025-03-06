@@ -38,7 +38,7 @@ const LoginPage = () => {
                 toast.success(data.msg)
                 localStorage.setItem("token",data.token)
                 await fetchUserProfile()
-                router.push("/")
+                router.push("/dashboard")
 
             } catch (error) {
                 toast.error( error.response.data.message ||error.message)

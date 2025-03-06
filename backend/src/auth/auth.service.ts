@@ -5,6 +5,7 @@ import { RegisterUserDTO ,LoginUserDTO} from 'src/dto/auth.dto';
 import { User } from 'src/models/User.model';
 import { JwtService } from '@nestjs/jwt';
 import {compare} from 'bcryptjs'
+import cloudinary from 'src/utils/Cloudiary';
 
 @Injectable()
 export class AuthService {
@@ -67,6 +68,17 @@ export class AuthService {
         ;
         console.log(user)
         return user
+    }
+
+
+    async UpdateAvatar(file: Express.Multer.File){
+       
+
+        const profileImage = await cloudinary.uploader.upload(file.path,{
+            folder:'wedding-planner'
+        })
+        return profileImage.secure_url  
+
     }
 
 }
