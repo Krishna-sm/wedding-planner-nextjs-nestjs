@@ -1,5 +1,6 @@
 "use client";
 import { store } from '@/app/redux/store';
+import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { MainContextProvider } from '@/context/MainContext'
 import React from 'react'
@@ -14,6 +15,7 @@ const MainLayout = ({children}) => {
       <Header/>
       <ToastContainer/>
       {children}
+      <Footer/>
       </MainContextProvider>
      </Provider>
    </>

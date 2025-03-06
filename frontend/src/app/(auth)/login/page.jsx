@@ -1,5 +1,6 @@
 "use client";
 import CustomButton from '@/components/CustomButton';
+import { useMainContext } from '@/context/MainContext';
 import { axiosClient } from '@/utils/AxiosClient';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import Link from 'next/link';
@@ -13,6 +14,7 @@ const LoginPage = () => {
 
         const [isHide,setIsHide] = useState(true)
         const [loading,setIsLoading] = useState(false)
+        const {fetchUserProfile} = useMainContext()
         const router = useRouter()
 
         const initialValues ={ 
@@ -35,6 +37,7 @@ const LoginPage = () => {
        
                 toast.success(data.msg)
                 localStorage.setItem("token",data.token)
+                await fetchUserProfile()
                 router.push("/")
 
             } catch (error) {

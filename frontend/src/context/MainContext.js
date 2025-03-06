@@ -2,11 +2,15 @@
 import { removeUser, setUser } from "@/app/redux/slices/UserSlice";
 import Loader from "@/components/Loader";
 import { axiosClient } from "@/utils/AxiosClient";
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
-export const mainContext = createContext()
+export const mainContext = createContext({
+    fetchUserProfile(){},
+    logoutHandler(){}
+})
 
 export const useMainContext = ()=> useContext(mainContext)
 
@@ -14,7 +18,7 @@ export const MainContextProvider = ({children})=>{
  
     const dispatch = useDispatch()
     const [loading,setLoading] = useState(true)
-
+const router = useRouter()
     const fetchUserProfile = async()=>{
         const token = localStorage.getItem("token") ||''
         try {
@@ -37,6 +41,16 @@ export const MainContextProvider = ({children})=>{
             setLoading(false)
         }
     }
+    const logoutHandler = ()=>{
+        try {
+            dispatch(removeUser({}))
+            localStorage.removeItem("token")
+            toast.success("Logout Success")
+            router.push("/login")
+        } catch (error) {
+                toast.error(error.message)
+        }
+    }
 
 
     useEffect(()=>{
@@ -50,7 +64,7 @@ export const MainContextProvider = ({children})=>{
     }
 
     return (
-        <mainContext.Provider value={{}}>
+        <mainContext.Provider value={{fetchUserProfile,logoutHandler}}>
             {children}
         </mainContext.Provider>
     )
