@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export const axiosClient = axios.create({
-    baseURL:'http://localhost:1234/api/v1'
+    baseURL:process.env.NEXT_PUBLIC_BASE_URI
 })

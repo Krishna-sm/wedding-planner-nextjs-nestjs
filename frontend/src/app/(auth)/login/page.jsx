@@ -67,8 +67,8 @@ const LoginPage = () => {
                       <div className="flex items-center justify-center gap-x-2 border border-indigo-400 px-3 rounded-md ">
                       <Field type={isHide?"password":"text"} id='password' name='password' className="w-full py-3 bg-transparant  outline-none    " placeholder='Enter Your Password' />
                      {      
-                                isHide ?  <FaEye onClick={()=>setIsHide(!isHide)} className='text-3xl text-secondary' />:
-                                <FaEyeSlash onClick={()=>setIsHide(!isHide)} className='text-3xl text-secondary'/>
+                                isHide ?  <FaEye onClick={()=>setIsHide(!isHide)} className='text-3xl text-primary' />:
+                                <FaEyeSlash onClick={()=>setIsHide(!isHide)} className='text-3xl text-primary'/>
                      }
                       </div>
                       <ErrorMessage className='text-sm text-red-500' component={'p'} name='password' />

@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import * as yup from 'yup'
 import { IoCloudUploadOutline } from "react-icons/io5";
+import DefaultPic from '@/assets/images/default_icon.avif'
 
 
 import {
@@ -21,13 +22,22 @@ import { Textarea } from "@/components/ui/textarea"
 import CustomButton from '@/components/CustomButton';
 import { axiosClient } from '@/utils/AxiosClient';
 import { CgSpinner } from 'react-icons/cg';
+import Image from 'next/image';
+import { useMainContext } from '@/context/MainContext';
 const ProfilePage = () => {
     const user = useSelector(UserSlicePath)
+    const {fetchUserProfile}= useMainContext()
+    const [loading,setLoading] = useState(false)
 
     const initialValues = {
         name: user.name || '',
         gender: user.gender || '',
-        bio: user.bio || ''
+        bio: user.bio || '',
+        address:{
+            street:user.address?.street|| '',
+            landmark: user.address?.landmark||'',
+            pincode: user.address?.pincode||'',
+        }
 
     }
 
@@ -35,13 +45,31 @@ const ProfilePage = () => {
         name: yup.string().required('Name is required'),
         gender: yup.string().required('Gender is required'),
         bio: yup.string().required('Bio is required'),
+        address: yup.object().shape({
+            street: yup.string().required('Street is required'),
+            landmark: yup.string().required('Landmark is required'),
+            pincode: yup.string().required('Pin Code is required'),  
+        }),
     });
 
-    const onBasicProfileUpdateHandler = (values, helpers) => {
+    const onBasicProfileUpdateHandler = async(values, helpers) => {
         try {
-            toast.success("Profile Updated !")
+            
+            setLoading(true)
+            const response = await  axiosClient.put("/auth/update-profile",values,{
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            })
+
+            const data = await response.data
+            toast.success(data.msg)
+            await fetchUserProfile()
+
         } catch (error) {
             toast.error(error.response.data.message || error.message)
+        }finally{
+            setLoading(false)
         }
     }
     return (
@@ -74,8 +102,8 @@ const ProfilePage = () => {
                                             <SelectValue placeholder="Select Gender" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="Male">Male</SelectItem>
-                                            <SelectItem value="Female">Female</SelectItem>
+                                            <SelectItem value="male">Male</SelectItem>
+                                            <SelectItem value="female">Female</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <ErrorMessage className='text-sm text-red-500' name='gender' component={'p'} />
@@ -92,8 +120,46 @@ const ProfilePage = () => {
                                         value={values.bio}
                                     />
                                 </div>
+
+                                        <div className="mb-3">
+                                    <label htmlFor="street">Street <span className="text-red-500">*</span> </label>
+                                    <Field
+                                        id="street"
+                                        placeholder="Enter Your Street"
+                                        className="resize-none w-full py-2 px-4 bg-transaparant border outline-none rounded-md " 
+                                        name="address.street"  
+                                    />
+                                    <ErrorMessage className='text-sm text-red-500' name='address.street' component={'p'} />
+
+                                        </div>
+
+                                        <div className="mb-3">
+                                    <label htmlFor="pincode">Pin Code <span className="text-red-500">*</span> </label>
+                                    <Field
+                                        id="pincode"
+                                        placeholder="Enter Your Pin Code"
+                                        className="resize-none w-full py-2 px-4 bg-transaparant border outline-none rounded-md " 
+                                        name="address.pincode"  
+                                    />
+                                    <ErrorMessage className='text-sm text-red-500' name='address.pincode' component={'p'} />
+
+                                        </div>
+
+                                        <div className="mb-3">
+                                    <label htmlFor="landmark">LandMark <span className="text-red-500">*</span> </label>
+                                    <Field
+                                        id="landmark"
+                                        placeholder="Enter Your Landmark"
+                                        className="resize-none w-full py-2 px-4 bg-transaparant border outline-none rounded-md " 
+                                        name="address.landmark"  
+                                    />
+                                    <ErrorMessage className='text-sm text-red-500' name='address.landmark' component={'p'} />
+
+                                        </div>
+
+
                                 <div className="mb-3">
-                                    <CustomButton label={'Update Profile'} />
+                                    <CustomButton isLoading={loading} label={'Update Profile'} />
                                 </div>
                             </form>
                         )}
@@ -115,7 +181,9 @@ const ImageUpdateComponent = () => {
 
     const [image, setImage] = useState(null);
     const [loading,setLoading] = useState(false)
-
+    const user = useSelector(UserSlicePath)
+    const {fetchUserProfile} = useMainContext()
+        console.log(user)
     const updateProfleAvatar =async(file)=>{
         try {
             setLoading(true)
@@ -129,9 +197,9 @@ const ImageUpdateComponent = () => {
               
             })
 
-            const data = await response.data
-            console.log(data)
-            toast.success("Profile Avatar Updated!")
+            const data = await response.data 
+            toast.success(data.msg)
+            await fetchUserProfile()
 
         } catch (error) {
                 toast.error( error.response.data.message ||error.message)
@@ -174,7 +242,7 @@ const ImageUpdateComponent = () => {
                     <p className="mt-2 text-gray-700 text-sm">Drag and drop  </p>
                 </div> : 
                 <div className="relative mx-auto  w-[200px] h-[200px] object-cover  ">
-                <img src="https://img.freepik.com/free-vector/smiling-young-man-illustration_1308-174669.jpg" className=' object-cover w-full h-full rounded-full mx-auto' alt="" />
+                <Image width={1000} height={1000}  src={user && user.avatar ?user.avatar : DefaultPic} className=' object-cover w-full h-full rounded-full mx-auto' alt="Profile Pic" />
                 <button className='bottom-[15px] right-0 absolute text-xl p-2 shadow text-black bg-white  rounded-full'>
                     <PiPencilSimple />
                 </button>

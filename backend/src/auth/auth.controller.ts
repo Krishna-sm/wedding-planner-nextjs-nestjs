@@ -1,5 +1,5 @@
 import { Body, Controller, Post,Get,UseGuards, Req, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { RegisterUserDTO,LoginUserDTO } from 'src/dto/auth.dto';
+import { RegisterUserDTO,LoginUserDTO, UpdateProfileDTO } from 'src/dto/auth.dto';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { AdminGuard } from 'src/guards/admin/admin.guard';
@@ -35,11 +35,22 @@ export class AuthController {
          @Put("/update-avatar")
          @UseGuards(AuthGuard)    
          @UseInterceptors(FileInterceptor('image'))
-         async UpdateAvatar(@UploadedFile() file: Express.Multer.File){
+         async UpdateAvatar(@UploadedFile() file: Express.Multer.File,@Req() req){
             
-              const res_obj = await this.authService.UpdateAvatar(file)
+              const res_obj = await this.authService.UpdateAvatar(file,req.user)
               return res_obj
          } 
+
+         
+         @Put("/update-profile")
+         @UseGuards(AuthGuard)     
+         async UpdateProlfile(@Body() data:UpdateProfileDTO ,@Req() req){
+            
+              const res_obj = await this.authService.UpdateProfile(data,req.user)
+              return res_obj
+         } 
+
+         
 
 
 }

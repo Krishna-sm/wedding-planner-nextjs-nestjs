@@ -33,7 +33,7 @@ const ProfileButton = () => {
     <DropdownMenuLabel>My Account</DropdownMenuLabel>
     <DropdownMenuSeparator />
     <DropdownMenuItem>
-                <Link href={'/'}>Profile</Link>
+                <Link href={'/profile'}>Profile</Link>
         </DropdownMenuItem> 
         <DropdownMenuItem>
         <Link href={'/dashboard'}>Dashboard</Link>

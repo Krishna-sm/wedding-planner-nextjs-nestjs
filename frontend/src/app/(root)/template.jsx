@@ -10,6 +10,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SidebarSlicePath, toggleCollapse, toggleSidebar } from '../redux/slices/SidebarSlice';
 import { UserSlicePath } from '../redux/slices/UserSlice';
 import Loader from '@/components/Loader';
+import { VscFeedback } from "react-icons/vsc";
+
+import { GoGear } from "react-icons/go";
 
 const CustomMenuItem = ({title,link,Icon})=>{
     const pathname = usePathname()
@@ -71,7 +74,26 @@ const RootTemplalate = ({children}) => {
       <MenuItem> Line charts </MenuItem>
     </SubMenu> */}
     <CustomMenuItem Icon={MdOutlineSpaceDashboard } link={'/dashboard'} title={'Dashboard'} />  
-    <CustomMenuItem Icon={MdOutlineSpaceDashboard } link={'/profile'} title={'Profile'} />  
+    {/* <CustomMenuItem Icon={MdOutlineSpaceDashboard } link={'/profile'} title={'Profile'} /> */}
+
+
+            {user &&user?.role ==="user" ?<>
+              <UserMenus/>
+            </>: 
+            user &&user?.role ==="admin"?<>
+              <AdminMenus/>
+            </>:
+            user &&user?.role ==="vendor"?<>
+                <VendorMenus/>
+            </>:
+            <>
+
+            </>
+            
+            } 
+
+
+
   </Menu>
 </Sidebar>
 <button onClick={()=>dispatch(toggleCollapse())} className={`  
@@ -88,3 +110,19 @@ const RootTemplalate = ({children}) => {
 }
 
 export default RootTemplalate
+
+
+const UserMenus=()=>{
+  return <>
+  <CustomMenuItem link={'/feedback'} title={'Feedback'}  Icon={VscFeedback }/>
+  </>
+}
+const AdminMenus=()=>{
+ return  <>
+  <CustomMenuItem link={'/categories'} title={'Services'}  Icon={GoGear }/>
+  
+  </>
+}
+const VendorMenus=()=>{
+ return  <></>
+}
