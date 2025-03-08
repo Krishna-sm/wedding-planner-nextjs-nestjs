@@ -28,6 +28,7 @@
     "react-pro-sidebar": "^1.1.0",
     "react-redux": "^9.2.0",
     "react-toastify": "^11.0.5",
+    "sweetalert2": "^11.17.2",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
     "yup": "^1.6.1"

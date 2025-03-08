@@ -1,3 +1,4 @@
+"use client";
 import BreadCrums from '@/components/BreadCrums'
 import Link from 'next/link'
 import React from 'react'
@@ -10,7 +11,24 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
+import { useGetAllCategoriesQuery } from '@/app/redux/queries/AdminCategory'
+import Loader from '@/components/Loader'
+import ErrorComponent from '@/components/ErrorComponent'
+import Image from 'next/image';
+import CategoryTableCard from './__+(components)/CategoryTableCard';
 const Categories = () => {
+
+        const {data,isLoading,isError} = useGetAllCategoriesQuery()
+
+        if(isLoading){
+            return <Loader/>
+        }
+        if(isError){
+            return <ErrorComponent/>
+        }
+        console.log(data)
+
+
   return (
     <>
              
@@ -37,23 +55,14 @@ const Categories = () => {
         </TableRow>
     </TableHeader>
     <TableBody>
-        <TableRow>
-        <TableCell className="font-medium">1</TableCell>
-        <TableCell>Makup</TableCell>
-        <TableCell>
-            <span className="inline-flex items-center px-2 py-1 text-lg font-arial leading-tight text-green-600 bg-green-100 rounded-full">
-                Active
-            </span>
-        </TableCell>
-        <TableCell>
-            <img alt="service" className=" w-12 xl:w-24  h-12 xl:h-24 object-cover object-center rounded-full" src="https://dummyimage.com/201x201" />
-        </TableCell>
-
-        <TableCell className="text-right">
-        <Link href={`/categories/${1}/edit`} className="px-4 py-2 bg-teal-500 font-pregular text-white rounded-sm shadow ml-2">Edit</Link>
-            <Link href={`/categories/${1}/delete`} className="px-4 py-2 bg-red-500 font-pregular text-white rounded-sm shadow ml-2">Delete</Link>
-        </TableCell>
-        </TableRow>
+        {
+            data && data.length>0 ? data.map((cur,i)=>{
+                return <CategoryTableCard data={cur} index={i} key={i} />
+            }):
+            <TableRow>
+                <TableCell colSpan={5} className="text-center   font-psmbold text-xl text-gray-400">No Data Found</TableCell>
+            </TableRow>
+        }
     </TableBody>
     </Table>
 

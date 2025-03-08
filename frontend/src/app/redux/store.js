@@ -11,7 +11,7 @@ export const store = configureStore({
         [SidebarSlice.name]:SidebarSlice.reducer,
         [AdminCategoryQuery.reducerPath]:AdminCategoryQuery.reducer
     },
-    middleware:f=>f().concat()
+    middleware:f=>f().concat(AdminCategoryQuery.middleware)
 })
 
 setupListeners(store.dispatch)

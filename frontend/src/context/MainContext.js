@@ -30,13 +30,16 @@ const router = useRouter()
                     Authorization:`Bearer ${token}`
                 }
             })
-            const data = await response.data;
-            dispatch(setUser(data))
+            const data = await response?.data;
+            if(data){
+
+                dispatch(setUser(data))
+            }
             
 
         } catch (error) {
-            toast.error(error.response.data.message || error.message)
-            dispatch(removeUser({}))
+            toast.error(error?.response?.data?.message || error.message)
+            // dispatch(removeUser({}))
         }finally{
             setLoading(false)
         }

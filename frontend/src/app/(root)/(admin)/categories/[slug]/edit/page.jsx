@@ -4,48 +4,87 @@ import BreadCrums from '@/components/BreadCrums'
 import { ErrorMessage, Field, Formik } from 'formik' 
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
-import React, {useCallback, useState} from 'react'
+import React, {use, useCallback, useState} from 'react'
 import {useDropzone} from 'react-dropzone'
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { RxCross2 } from "react-icons/rx";
 
 import CustomButton from '@/components/CustomButton';
-import { useCreateCategoryMutation } from '@/app/redux/queries/AdminCategory';
+import { useEditCategoryMutation, useGetCategoryQuery } from '@/app/redux/queries/AdminCategory';
+import { useParams } from 'next/navigation';
+import Loader from '@/components/Loader';
+import ErrorComponent from '@/components/ErrorComponent';
+import Image from 'next/image';
 
-const CategoryCreatePage = () => {
-  const [CreateMutaitonFunction,CreateMutaitonResponse] = useCreateCategoryMutation()
+const EditCategoryPage = (props) => {
+    console.log(props)
+  const [editCategoryFn,EditCategoryResponse] = useEditCategoryMutation() 
+const params = use(props.params) 
+  const {data,isLoading,isError} = useGetCategoryQuery(params.slug) 
+
+
+  if(isLoading){
+    return <div className="min-h-screen flex items-center justify-center w-full">
+        <Loader/>
+    </div>
+  }
+
+
+  if(isError){
+    return <div className="min-h-screen flex items-center justify-center w-full">
+        <ErrorComponent/>
+    </div>
+  }
 
   const initialValues = {
-    name:'',
-    desc:'',
-    image:null
+    name:data.name ||'',
+    desc:data.desc ||'',
+    image:null,
+    preview_image:data.image.image_uri,
+    status: data.isPublic ||false
   }
 
   const validationSchema = yup.object({
     name: yup.string().required('Name is required'),
     desc: yup.string().required('Description is required'),
-    image: yup.mixed().required('Image is required')
+    image: yup.mixed().optional().nullable("Image also be a null"), 
+    status: yup.boolean().required("Status is Required"),
+
   });
 
   const onSubmitHandler = async(values,helpers)=>{
     try {
       
+        const update_obj={
+            data:null
+        }
       // console.log(values)
       // helpers.resetForm()
-      const formData = new FormData()
-      formData.append('name', values.name)
-      formData.append('desc', values.desc)
-      formData.append('image', values.image)
+     if(values.image){
+        const formData = new FormData()
+        formData.append('name', values.name)
+        formData.append('desc', values.desc)
+        formData.append('image', values.image)
+        formData.append('status', values.status)
+        update_obj.data = formData
+     }
+     else{
+        update_obj.data = {
+            ...values,
+            preview_image:undefined
+        }
+        
+     }
 
-      const {data,error} = await CreateMutaitonFunction(formData)
+      const {data:Data,error} = await editCategoryFn({id:data._id,data:update_obj.data})
       if(error) {
         toast.error(error.message)
         return
       }
-      toast.success(data.msg)
-      console.log(data)
+      toast.success(Data.msg)
+    //   console.log(data)
 
-      helpers.resetForm()
+    //   helpers.resetForm()
 
 
     } catch (error) {
@@ -53,11 +92,12 @@ const CategoryCreatePage = () => {
     }
   }
 
+
   return (
     <>
         <BackButton/>
 
-        <BreadCrums text={'Add Category'} />
+        <BreadCrums text={'Edit Category'} />
 
 
     <Formik
@@ -66,7 +106,7 @@ const CategoryCreatePage = () => {
         onSubmit={onSubmitHandler}
     >
 
-          {({handleSubmit,values,setFieldValue})=>(
+          {({handleSubmit,values,setFieldValue,errors})=>(
              <form onSubmit={handleSubmit} className="py-10 bg-white container rounded-md shadow px-4 xl:px-10"> 
 
              <div className="mb-3">
@@ -84,10 +124,27 @@ const CategoryCreatePage = () => {
              <div className="mb-3">
              <label htmlFor="category_image">Category Image <span className="text-red-500">*</span></label>
 
-              <ImagePicker setFileValue={setFieldValue}  values={values.image} />
+                        <div className="grid grid-cols-1 lg:grid-cols-2">
+                        <ImagePicker setFileValue={setFieldValue}  values={values.image} />
+                                <div className="h-[20vh]">
+                                <Image className='w-full py-3  h-full object-contain' src={values.preview_image} alt='image-d' width={1000} height={1000}  />
+                                </div>
+                        </div>
+             
              </div>
+
+                    <div className="mb-3">
+                           <div className="mb-3">
+                           <Field id="category_status" name="status" type="checkbox" className="px-2 mx-2"  />
+                           <label  htmlFor="category_status">Category Status <span className="text-red-500">*</span></label>
+                           </div>
+                           <ErrorMessage className='text-red-500 text-sm ' component={'p'} name='status' />
+
+                    </div> 
+
+
              <div className="mb-3">
-              <CustomButton type="submit" isLoading={CreateMutaitonResponse.isLoading} label={'Add Category'} />
+              <CustomButton type="submit" isLoading={EditCategoryResponse.isLoading} label={'Edit Category'} />
              </div>
 
              
@@ -101,7 +158,7 @@ const CategoryCreatePage = () => {
   )
 }
 
-export default CategoryCreatePage
+export default EditCategoryPage
 
 const ImagePicker = ({setFileValue,values})=>{
   // const [image,setImage] = useState(null)
