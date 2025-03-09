@@ -124,5 +124,8 @@ const AdminMenus=()=>{
   </>
 }
 const VendorMenus=()=>{
- return  <></>
+ return  <>
+  <CustomMenuItem link={'/services'} title={'Services'}  Icon={GoGear }/>
+ 
+ </>
 }

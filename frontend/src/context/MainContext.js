@@ -1,4 +1,5 @@
 "use client";
+import { AdminCategoryQuery } from "@/app/redux/queries/AdminCategory";
 import { removeUser, setUser } from "@/app/redux/slices/UserSlice";
 import Loader from "@/components/Loader";
 import { axiosClient } from "@/utils/AxiosClient";
@@ -47,6 +48,8 @@ const router = useRouter()
     const logoutHandler = ()=>{
         try {
             dispatch(removeUser({}))
+            dispatch(AdminCategoryQuery.util.resetApiState())
+
             localStorage.removeItem("token")
             toast.success("Logout Success")
             router.push("/login")

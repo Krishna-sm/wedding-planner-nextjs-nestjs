@@ -14,7 +14,7 @@ import NextTopLoader from 'nextjs-toploader';
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en"     data-color-mode="light">
       <body
         className={` font-pregular bg-whitesmoke`}
       >
