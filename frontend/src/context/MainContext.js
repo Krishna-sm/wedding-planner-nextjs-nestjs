@@ -1,5 +1,6 @@
 "use client";
 import { AdminCategoryQuery } from "@/app/redux/queries/AdminCategory";
+import { VendorServiceQuery } from "@/app/redux/queries/VendorService";
 import { removeUser, setUser } from "@/app/redux/slices/UserSlice";
 import Loader from "@/components/Loader";
 import { axiosClient } from "@/utils/AxiosClient";
@@ -49,6 +50,7 @@ const router = useRouter()
         try {
             dispatch(removeUser({}))
             dispatch(AdminCategoryQuery.util.resetApiState())
+            dispatch(VendorServiceQuery.util.resetApiState())
 
             localStorage.removeItem("token")
             toast.success("Logout Success")

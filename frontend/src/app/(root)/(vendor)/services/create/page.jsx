@@ -15,12 +15,16 @@ import MarkDownCustomEditor from '@/components/reuseable/MarkdownCustomEditor';
 import { SectionsTitles } from '@/utils/constant.vendor';
 import { CiTrash } from "react-icons/ci";
 import Swal from 'sweetalert2';
+import { useCreateVendorServiceMutation, useFetchAllCategoriesServiceQuery } from '@/app/redux/queries/VendorService';
 
 const CreateServicePge = () => {
-//   const [CreateMutaitonFunction,CreateMutaitonResponse] = useCreateCategoryMutation()
+  const [CreateMutaitonFunction,CreateMutaitonResponse] = useCreateVendorServiceMutation()
+  const {data : AllCategories,isLoading} = useFetchAllCategoriesServiceQuery()
 
   const initialValues = {
-    name:'',
+    category:'',
+    budget:'',
+    title:'',
     desc:'',
     images:[],
     sections:[
@@ -33,7 +37,9 @@ const CreateServicePge = () => {
   }
 
   const validationSchema = yup.object({
-    name: yup.string().required('Name is required'),
+    category: yup.string().required('Please Select Valid Category'),
+    budget: yup.number().required('Enter Valid Budget').min(100,"Budget Should be grater than ₹ 100/-"),
+    title: yup.string().required('Service Name is required'),
     desc: yup.string().required('Description is required'),
     image: yup.array().of(yup.mixed().required('Image is required')),
     sections: yup.array().of(
@@ -48,22 +54,41 @@ const CreateServicePge = () => {
   const onSubmitHandler = async(values,helpers)=>{
     try {
       
-      console.log("values",values)
-      // helpers.resetForm()
-      // const formData = new FormData()
-      // formData.append('name', values.name)
-      // formData.append('desc', values.desc)
-      // formData.append('image', values.image)
+      // console.log("values",values)
 
-    //   const {data,error} = await CreateMutaitonFunction(formData)
-    //   if(error) {
-    //     toast.error(error.message)
-    //     return
-    //   }
-    //   toast.success(data.msg)
-    //   console.log(data)
+      
 
       // helpers.resetForm()
+      const formData = new FormData()
+      formData.append('category', values.category)
+      formData.append('title', values.title)
+      formData.append('desc', values.desc)
+        // formData.append('images', values.images)
+      // pass images in formdata as an array
+      values.images.forEach((image) => {
+        formData.append("images", image);
+    });
+
+      // pass sections in formdata as an array
+      values.sections.forEach((section, index) => {
+        formData.append(`sections[${index}][title]`, section.title);
+        formData.append(`sections[${index}][content]`, section.content);
+    });
+
+ 
+      formData.append('keywords', values.keywords)
+      formData.append('budget', values.budget)
+      
+
+      const {data,error} = await CreateMutaitonFunction(formData)
+      if(error) {
+        toast.error(error.message)
+        return
+      }
+      toast.success(data.msg)
+    
+
+      helpers.resetForm()
 
 
     } catch (error) {
@@ -87,15 +112,30 @@ const CreateServicePge = () => {
           {({handleSubmit,values,setFieldValue,errors})=>(
              <form onSubmit={handleSubmit} className="py-10 bg-white container rounded-md shadow px-4 xl:px-10"> 
 
+<div className="mb-3">
+                    <label htmlFor="category">Category <span className="text-red-500">*</span></label>
+                    <Field as="select" name="category" id="category" className="w-full border-primary border outline-none rounded-md px-3 py-3" placeholder="Enter Choose Valid Category" >
+                   {isLoading? <option value="">loading...</option>:   <option value="">select</option>}
+                        {
+                          !isLoading && AllCategories.map((cur,i)=>{
+                            return <option key={i} value={cur._id}>{cur.name}</option>
+                          })
+                        }
+                    </Field>
+                    <ErrorMessage className='text-red-500 text-sm ' component={'p'} name='category' />
+             </div>
+
+
+
              <div className="mb-3">
-                    <label htmlFor="name">Name <span className="text-red-500">*</span></label>
-                    <Field name="name" id="name" className="w-full border-primary border outline-none rounded-md px-3 py-3" placeholder="Enter Category Name" />
-                    <ErrorMessage className='text-red-500 text-sm ' component={'p'} name='name' />
+                    <label htmlFor="title">Name <span className="text-red-500">*</span></label>
+                    <Field name="title" id="title" className="w-full border-primary border outline-none rounded-md px-3 py-3" placeholder="Enter Service Title" />
+                    <ErrorMessage className='text-red-500 text-sm ' component={'p'} name='title' />
              </div>
 
              <div className="mb-3">
                     <label htmlFor="desc">Desc <span className="text-red-500">*</span></label>
-                    <Field as="textarea" name="desc" id="desc" className="w-full border-primary border outline-none rounded-md px-3 py-3" placeholder="Enter Category Description" />
+                    <Field as="textarea" name="desc" id="desc" className="w-full border-primary border outline-none rounded-md px-3 py-3" placeholder="Enter Service Description" />
                     <ErrorMessage className='text-red-500 text-sm ' component={'p'} name='desc' />
              </div>   
 
@@ -112,13 +152,9 @@ const CreateServicePge = () => {
                             <FieldArray
              name="sections"
              render={arrayHelpers => {
-              const SectionValues= Object.values(SectionsTitles) 
+              const SectionValues= SectionsTitles
 
-
-              // const filterSection = SectionValues.filter((cur,i)=>{
-              //   return !values.sections.find((curd)=>curd.title == cur)
-              // })
-            
+ 
 
 
                return <div >
@@ -141,33 +177,13 @@ const CreateServicePge = () => {
                      Titlename={`sections[${index}].title`}
                      Contentname={`sections[${index}].content`}
                     setFieldValue={setFieldValue} removeHandler={()=>arrayHelpers.remove(index)} values={values.sections} conent_default_value={section.content}  />
-
-                    //  <div key={index}>
-                    //    <Field name={`sections.${index}`} />
-                    //    <button
-                    //      type="button"
-                    //      onClick={() => arrayHelpers.remove(index)} // remove a friend from the list
-                    //    >
-                    //      -
-                    //    </button>
-                    //    <button
-                    //      type="button"
-                    //      onClick={() => arrayHelpers.insert(index, '')} // insert an empty string at a position
-                    //    >
-                    //      +
-                    //    </button>
-                    //  </div>
+ 
              })
                  ) : (
                   <></>
-                  //  <button type="button" onClick={() => arrayHelpers.push('')}>
-                  //    {/* show this when user has removed all friends from the list */}
-                  //    Add Section
-                  //  </button>
+                 
                  )}
-                 {/* <div>
-                   <button type="submit">Submit</button>
-                 </div> */}
+                 
  
                </div>
              }}
@@ -184,11 +200,29 @@ const CreateServicePge = () => {
              
 </div>
 
+<div className="mb-3">
+        <label htmlFor="budget">
+        Budget <span className="text-red-500">*</span>
+        </label>
+        <Field
+        name="budget"
+        id="budget"
+        className="w-full border-primary border outline-none rounded-md px-3 py-3"
+        placeholder="Enter Your Service Budget"
+        onKeyPress={(event) => {
+        if (!/[0-9]/.test(event.key)) {
+          event.preventDefault();
+        }
+        }}
+        />
+        <ErrorMessage className="text-red-500 text-sm" component="p" name="budget" />
+             </div>
+
 
 
 
              <div className="mb-3">
-              <CustomButton type="submit" isLoading={false} label={'Add Service'} />
+              <CustomButton type="submit" isLoading={CreateMutaitonResponse.isLoading} label={'Add Service'} />
              </div>
 
              
@@ -302,8 +336,8 @@ const AddSectionForm = ({Titlename,Contentname,removeHandler,setFieldValue,conen
                                 <option  value={''} > Select   </option>
                             {
 
-Object.keys(SectionsTitles).length>0 &&Object.keys(SectionsTitles).map((cur,i)=>{
-                                return <option key={i} value={SectionsTitles[cur]}>{cur}</option>
+SectionsTitles.length>0 &&SectionsTitles.map((cur,i)=>{
+                                return <option key={i} value={cur}>{cur}</option>
                               })
                             }
 

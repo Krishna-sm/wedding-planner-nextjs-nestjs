@@ -14,7 +14,9 @@ export class CategoryService {
 
         // })
 
-        const uploadResult = await cloudinary.uploader.upload(file.path)
+        const uploadResult = await cloudinary.uploader.upload(file.path,{
+            folder:'wedding-planner-admin-cateogry'
+        })
 
         if(!uploadResult.secure_url){
             // bad request

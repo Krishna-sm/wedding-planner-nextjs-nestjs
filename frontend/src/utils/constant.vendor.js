@@ -1,8 +1,8 @@
-export const SectionsTitles={
-    'asdsaA':'Adsad',
-    'vxcB':'Bdasd',
-    'vxcvC':'Cdsad',
-    'Dvcxv':'Dfx',
-    'Evxcv':'Efdsf',
-    'vxcvF':'Ffsdfs',
-}
+export const SectionsTitles=['Key Responsiblities','Offers']
+
+export const StatusArray = [
+    'PENDING',
+    "COMPLETE",
+    "PROCESS",
+    "REJECTED"
+]

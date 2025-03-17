@@ -1,4 +1,5 @@
-import React from 'react'
+"use client";
+import React, { useState } from 'react'
 import ShowData from './__+(compoents)/ShowData'
 import BreadCrums from '@/components/BreadCrums'
 import { CiSearch } from "react-icons/ci";
@@ -14,7 +15,19 @@ import {
     SelectValue,
   } from "@/components/ui/select"
 import Link from 'next/link';
+import { useFetchAllCategoriesServiceQuery } from '@/app/redux/queries/VendorService';
 const VendorService = () => {
+
+
+    const [status,setStatus] = useState("All")
+    const [Category,setCategory] = useState("")
+    const [search,setSearch] = useState('')
+
+    
+  
+
+  const {data,isLoading} = useFetchAllCategoriesServiceQuery()
+ 
   return (
     <>
                 <div className="container">
@@ -23,18 +36,23 @@ const VendorService = () => {
                       <div className="grid  mb-3 grid-cols-1 xl:grid-cols-3 gap-y-4 gap-x-10">
                     <div className="col-span-1">
 
-                            <Select>
+                            <Select  onValueChange={(val)=>{
+                              setCategory(val)
+                            }} defaultValue={Category}>
                             <SelectTrigger className="w-full bg-white">
                             <SelectValue placeholder="Select Category" />
                             </SelectTrigger>
                             <SelectContent>
                             <SelectGroup>
                             <SelectLabel>Categories</SelectLabel>
-                            <SelectItem value="apple">Apple</SelectItem>
-                            <SelectItem value="banana">Banana</SelectItem>
-                            <SelectItem value="blueberry">Blueberry</SelectItem>
-                            <SelectItem value="grapes">Grapes</SelectItem>
-                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                            
+                            
+                            {isLoading? <SelectItem defaultValue="">loading...</SelectItem>:  null}
+                        {
+                          !isLoading &&data.length>0&& data.map((cur,i)=>{
+                            return <SelectItem key={i} value={cur._id}>{cur.name}</SelectItem>
+                          })
+                        }
                             </SelectGroup>
                             </SelectContent>
                             </Select>
@@ -43,15 +61,16 @@ const VendorService = () => {
                     <div className="col-span-1">
 
 
-                            <Select>
+                            <Select onValueChange={(val)=>setStatus(val)} defaultValue={status}>
                             <SelectTrigger className="w-full bg-white">
-                            <SelectValue placeholder="Select Status" />
+                            <SelectValue placeholder="Select Status"  />
                             </SelectTrigger>
                             <SelectContent>
-                            <SelectGroup>
+                            <SelectGroup >
                             <SelectLabel>Status</SelectLabel>
-                            <SelectItem value="apple">Active</SelectItem>
-                            <SelectItem value="banana">Un Active</SelectItem> 
+                            <SelectItem value="All">All</SelectItem>
+                            <SelectItem value="published">Published</SelectItem>
+                            <SelectItem value="UnPublish">Un Published</SelectItem> 
                             </SelectGroup>
                             </SelectContent>
                             </Select>
@@ -59,8 +78,8 @@ const VendorService = () => {
                     </div>
                     <div className="col-span-1">
                         <div className=" border rounded-md  px-4 flex items-center">
-                        <input type="text" className="w-full py-2 outline-none " placeholder='Search' />
-                        <CiSearch className='text-3xl'/>
+                        <input value={search} onChange={(e)=>setSearch(e.target.value)} type="text" className="w-full py-2 outline-none " placeholder='Search' />
+                        <CiSearch  className='text-3xl'/>
                         </div>
                     </div>
                       </div>
@@ -71,7 +90,8 @@ const VendorService = () => {
                             </Link>
                       </div>
 
-                            <ShowData/>
+                            <ShowData status={status}  search={search} Category={Category}/>
+
                     </div>     
     </>
   )

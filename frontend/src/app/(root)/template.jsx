@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import { IoIosArrowForward } from "react-icons/io";
 
-import {MdOutlineSpaceDashboard} from 'react-icons/md'
+import {MdOutlineContactSupport, MdOutlineSpaceDashboard} from 'react-icons/md'
 import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { SidebarSlicePath, toggleCollapse, toggleSidebar } from '../redux/slices/SidebarSlice';
@@ -126,6 +126,7 @@ const AdminMenus=()=>{
 const VendorMenus=()=>{
  return  <>
   <CustomMenuItem link={'/services'} title={'Services'}  Icon={GoGear }/>
+  <CustomMenuItem link={'/queries'} title={'Queries'}  Icon={MdOutlineContactSupport  }/>
  
  </>
 }
