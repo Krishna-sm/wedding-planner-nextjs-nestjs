@@ -140,8 +140,8 @@ const EditServicePage = (props) => {
             toast.error(error.message)
             return
           }
-          console.log(data)
-        //   toast.success(data.msg)
+          // console.log(data)
+          toast.success("Data Update")
         
     
         //   helpers.resetForm()
@@ -300,8 +300,7 @@ const EditServicePage = (props) => {
                         <div className="mb-3">
                          <CustomButton type="submit" isLoading={CreateMutaitonResponse.isLoading} label={'Update Service'} />
                         </div>
-           
-                     {JSON.stringify(values)}
+            
                         
                         </form>
                      )}

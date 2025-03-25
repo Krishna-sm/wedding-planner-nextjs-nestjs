@@ -22,6 +22,10 @@
   --color-primary:#21004b;
   --color-secondary:#4b0081;
   --color-tertary:#7e21d3;
+  --color-logo:#ff4500;
+}
+#service_card .empty-icons{
+  display: flex !important; 
 }
 /* 
 @theme inline {
@@ -37,6 +41,7 @@
     --foreground: #ededed;
   }
 }
+
 
 body {
   background: var(--background);

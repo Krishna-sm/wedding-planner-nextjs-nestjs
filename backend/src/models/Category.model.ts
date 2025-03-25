@@ -13,11 +13,11 @@ export class Category{
 
     @Prop({type:mongoose.Schema.Types.ObjectId,ref:'User'})
     user:User
-    @Prop({type:String,required:true})
+    @Prop({type:String,required:true,trim:true})
     name :string 
-    @Prop({type:String,required:true})
+    @Prop({type:String,required:true,trim:true})
     slug:string
-    @Prop({type:String,required:true})
+    @Prop({type:String,required:true,trim:true})
     desc:string 
     @Prop({type:{},required:true})
     image:Image

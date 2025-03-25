@@ -7,6 +7,7 @@ import { config } from 'dotenv';
 import { JwtModule  } from '@nestjs/jwt';
 import { VendorModule } from './vendor/vendor.module';
 import { AdminModule } from './admin/admin.module';
+import { PublicModule } from './public/public.module';
 config({
   path:'.env'
 })
@@ -15,7 +16,7 @@ config({
     global: true,
     secret: process.env.JWT_AUTH,
     signOptions: { expiresIn: '5h' },
-  }), VendorModule, AdminModule],
+  }), VendorModule, AdminModule, PublicModule],
   controllers: [AppController],
   providers: [AppService],
 })
