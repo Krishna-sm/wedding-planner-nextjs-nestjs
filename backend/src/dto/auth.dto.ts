@@ -46,4 +46,7 @@ export class UpdateProfileDTO{
    @IsEnum(GenderEnum) 
    gender:string
 
+   @IsNotEmpty({message:"Phone No is Required"})  
+   phone_no:string
+
 }

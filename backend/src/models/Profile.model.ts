@@ -27,6 +27,8 @@ export class Profile{
     address:Address
     @Prop({default:'',type:String})
     bio:string
+    @Prop({default:'',type:String})
+    phone_no:string
     @Prop({default:'male',type:String,enum:['male','female']})
     gender:string
 }

@@ -9,7 +9,7 @@ import 'swiper/css/pagination';
 // import 'swiper/css/navigation';
 
 import { Autoplay, Pagination } from 'swiper/modules';
-const ServiceSlider = () => {
+const ServiceSlider = ({images}) => {
   return (
     <>
            <section className='h-[50vh] object-contain overflow-hidden'>
@@ -28,15 +28,13 @@ const ServiceSlider = () => {
         modules={[Autoplay, Pagination]}
         className="mySwiper "
       >
-        <SwiperSlide>Slide 1</SwiperSlide>
-        <SwiperSlide>Slide 2</SwiperSlide>
-        <SwiperSlide>Slide 3</SwiperSlide>
-        <SwiperSlide>Slide 4</SwiperSlide>
-        <SwiperSlide>Slide 5</SwiperSlide>
-        <SwiperSlide>Slide 6</SwiperSlide>
-        <SwiperSlide>Slide 7</SwiperSlide>
-        <SwiperSlide>Slide 8</SwiperSlide>
-        <SwiperSlide>Slide 9</SwiperSlide>
+       {
+        images.map((image, index) => (
+          <SwiperSlide key={index}>
+            <img src={image} alt={image} className='w-full h-full object-cover' />
+          </SwiperSlide>
+        ))
+       }
       </Swiper>
            </section>
     </>

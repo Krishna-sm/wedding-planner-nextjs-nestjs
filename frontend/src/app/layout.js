@@ -3,6 +3,7 @@
 import '@/assets/fonts/fonts.css'
 import "./globals.css"; 
 import NextTopLoader from 'nextjs-toploader';
+import Script from 'next/script';
 
  
 
@@ -13,7 +14,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en"     data-color-mode="light" suppressHydrationWarning >
+    <html lang="en"     data-color-mode="light" suppressHydrationWarning > 
+    <head>
+        <Script id="markdown-it-fix" strategy="beforeInteractive">
+          {`
+            if (typeof window !== 'undefined' && typeof window.isSpace === 'undefined') {
+              window.isSpace = function(code) {
+                return code === 0x20 || code === 0x09 || code === 0x0A || code === 0x0B || code === 0x0C || code === 0x0D;
+              };
+            }
+          `}
+        </Script>
+      </head>
       <body
         className={` font-pregular bg-whitesmoke`}
         suppressHydrationWarning > 

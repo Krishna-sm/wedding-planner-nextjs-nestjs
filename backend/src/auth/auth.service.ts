@@ -77,11 +77,14 @@ export class AuthService {
            profile['isEmailVerified']=profilleData.isEmailVerified
            profile['address']=profilleData.address
            profile['bio']=profilleData.bio
+           profile['phone_no']=profilleData.phone_no
         }else{
             profile['avatar']=existProfile.avatar.uri
            profile['isEmailVerified']=existProfile.isEmailVerified
            profile['address']=existProfile.address
            profile['bio']=existProfile.bio
+           profile['phone_no']=existProfile.phone_no
+
         }
         
 
@@ -122,7 +125,8 @@ console.log("user profiled  ",profiled)
       await this.ProfileModel.findOneAndUpdate({user:id},{
         bio:data.bio,
         address:data.address,
-        gender:data.gender
+        gender:data.gender,
+        phone_no:data.phone_no
       })
       await this.UserModel.findByIdAndUpdate(id,{
         name:data.name,

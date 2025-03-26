@@ -1,20 +1,21 @@
+import { useSendEnqueryMutation } from '@/app/redux/queries/PublicQuery'
 import CustomButton from '@/components/CustomButton'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { useParams } from 'next/navigation'
 import React, { useState } from 'react'
 import Swal from 'sweetalert2'
 import * as yup from 'yup'
-const EnquieryForm = () => {
-    const [loading,setLoading] = useState(false)
+const EnquieryForm = ({serviceId}) => {
+    // const [loading,setLoading] = useState(false)
 
+    const [sendHandler,sendResponse] = useSendEnqueryMutation()
     const {service} = useParams()
 
         const intialValues = {
             name:'',
             email:'',
             phone:'',
-            message:'',
-            service_name:service
+            message:'' 
         }
 
         const validationSchema = yup.object({
@@ -26,24 +27,28 @@ const EnquieryForm = () => {
         })
         const onSubmitHandler = async(values,helpers)=>{
             try {
-                
-                setLoading(true)
+
+                const {data,error} = await sendHandler({service:serviceId,data:values})
+                if(error){ 
+                    throw new Error(error.message)
+                    return 
+                } 
+                 
                 Swal.fire({
                     icon: 'success',
-                    title: 'Your Enquiry has been submitted successfully',
+                    title: data.msg,
                     confirmButtonText: 'Close'
                 })
                 helpers.resetForm()
             } catch (error) {
+                console.log(error)
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: error.message,
                     confirmButtonText: 'Try again'
                 })
-            }finally{
-                setLoading(false)
-            }
+            } 
         }
 
   return (
@@ -56,7 +61,7 @@ const EnquieryForm = () => {
                             </div>
                             <div className="form bg-white px-5 py-3 border">
                                 <div className="mb-3">
-                                    <label htmlFor="name">Name <span className="text-red-500">*</span> </label>
+                                    <label htmlFor="name">Name {serviceId} <span className="text-red-500">*</span> </label>
                                     <Field name="name" id="name" className="w-full py-2 rounded border outline-none  px-4 bg-transparent"  placeholder="Enter Your Name"/>
                                     <ErrorMessage name='name' className='text-red-500 text-xs capitalize' component={'p'} />
                                 </div>
@@ -76,7 +81,7 @@ const EnquieryForm = () => {
                                     <ErrorMessage name='message' className='text-red-500 text-xs capitalize' component={'p'} />
                                 </div>
                                 <div className="mb-3">
-                                    <CustomButton type="submit" className={'!bg-logo'} label={'Submit'} isLoading={loading} />
+                                    <CustomButton type="submit" className={'!bg-logo'} label={'Submit'} isLoading={sendResponse.isLoading} />
                                 </div> 
 
                             </div>

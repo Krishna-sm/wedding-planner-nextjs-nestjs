@@ -39,7 +39,23 @@ export const PublicServiceQuery = createApi({
                 }),
             }),
             
+            getServiceBySlug:build.query({
+                query: ({category,service}) => ({
+                    url: `service/${category}/${service}`,
+                    method: 'GET',
+                }),
+            }),
+            sendEnquery:build.mutation({
+                query: ({service,data}) => ({
+                    url: `enquery/${service}`,
+                    method: 'POST',
+                    body:data
+                }),
+            }),
+            
+            
       
+            
     }),
   })
   export const { 
@@ -47,5 +63,7 @@ export const PublicServiceQuery = createApi({
         usePopularServicesQuery,
         useAlllCateriesQuery,
         useAllServicesQuery,
-        useAllServicesBySlugQuery
+        useAllServicesBySlugQuery,
+        useGetServiceBySlugQuery,
+        useSendEnqueryMutation
   } = PublicServiceQuery  
