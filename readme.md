@@ -24,7 +24,7 @@ A full-stack Wedding Planner application built using **Nest.js (Backend)** and *
 #### 1️⃣ Clone the repository
 ```sh
  git clone https://github.com/Krishna-sm/wedding-planner-nextjs-nestjs.git
- cd wedding-planner/backend
+ cd wedding-planner-nextjs-nestjs/backend
 ```
 
 #### 2️⃣ Install dependencies
@@ -62,7 +62,7 @@ CLOUDINARY_API_SCREATE=your_cloudinary_api_secret
 
 #### 3️⃣ Create `.env.local` file in the frontend root and add:
 ```
-NEXT_PUBLIC_BASE_URI=http://localhost:5000
+NEXT_PUBLIC_BASE_URI=http://localhost:3000/api/v1
 ```
 
 #### 4️⃣ Run the frontend server
