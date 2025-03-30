@@ -15,7 +15,11 @@ import { CiSearch } from 'react-icons/ci';
 const QueriesPage = () => {
 
   const [search,setSearch] = useState('')
-
+  const [status,setStatus] =useState('')
+  const [date, setDate] = React.useState({
+    from: new Date(),
+    to: new Date(),
+  })
   return (
     <>
           <BreadCrums text={'Queries'} />
@@ -23,11 +27,15 @@ const QueriesPage = () => {
 
     <div className="grid grid-cols-1 gap-x-5 gap-y-5  xl:grid-cols-3">
     <div className="mb-3 col-span-1">
-<Select>
+<Select
+
+onValueChange={(val)=>setStatus(val)} defaultValue={status}
+>
         <SelectTrigger className=" w-full bg-white">
         <SelectValue placeholder="Status" />
         </SelectTrigger>
         <SelectContent>
+        <SelectItem  >All</SelectItem>
       {
         StatusArray.map((cur,i)=>{
           return <SelectItem key={i} value={cur}>{cur}</SelectItem>
@@ -37,7 +45,7 @@ const QueriesPage = () => {
         </Select>
 </div>
         <div className="mb-3 col-span-1 "> 
-          <ShowQueriesonRange/>
+          <ShowQueriesonRange date={date} setDate={setDate} />
         </div>
 
         <div className="col-span-1 ">
@@ -52,7 +60,7 @@ const QueriesPage = () => {
 
 
           <div className=" px-3 2xl:px-10 py-10 bg-white">
-          <ShowData/>
+          <ShowData status={status} search={search} from={date.from} to={date.to} />
           </div>
 
 

@@ -33,6 +33,7 @@ const ProfilePage = () => {
         name: user.name || '',
         gender: user.gender || '',
         bio: user.bio || '',
+        phone_no:user.phone_no||'',
         address:{
             street:user.address?.street|| '',
             landmark: user.address?.landmark||'',
@@ -50,6 +51,12 @@ const ProfilePage = () => {
             landmark: yup.string().required('Landmark is required'),
             pincode: yup.string().required('Pin Code is required'),  
         }),
+        // validate with indian mobile no 
+        phone_no: yup.string().matches(/^[6-9]\d{9}$/, {
+            message: 'Invalid Indian Mobile Number',
+            type: 'pattern',
+        }).required("Mobile Number is Required")
+
     });
 
     const onBasicProfileUpdateHandler = async(values, helpers) => {
@@ -92,9 +99,16 @@ const ProfilePage = () => {
                                 <div className="mb-3">
                                     <label htmlFor="email">Email <span className="text-red-500">*</span> </label>
                                     <input id="email" type="email" readOnly defaultValue={user.email} className="w-full py-2 px-4 bg-transaparant border outline-none rounded-md" placeholder='Enter Your Email' />
+                           
 
                                 </div>
 
+                                <div className="mb-3">
+                                    <label htmlFor="phone_no">Mobile No <span className="text-red-500">*</span> </label>
+                                    <Field name="phone_no" id="phone_no" type="text" className="w-full py-2 px-4 bg-transaparant border outline-none rounded-md" placeholder='Enter Your Mobile No.' />
+
+                                    <ErrorMessage className='text-sm text-red-500' name='phone_no' component={'p'} />
+                                </div>
                                 <div className="mb-3">
                                     <label htmlFor="gender">Gender <span className="text-red-500">*</span> </label>
                                     <Select onValueChange={(gender) => setFieldValue('gender', gender)} defaultValue={values.gender} >

@@ -11,15 +11,14 @@ import {
 import { CiMail, CiMobile2 } from 'react-icons/ci'
 import { LuSend } from "react-icons/lu";
 
-const ContactInfomation = () => {
+const ContactInfomation = ({
+  name='John Doe',
+  phone='+91 1234567890',
+  email='johndoe@example.com',
+  address='123 Main St, Anytown, USA',
+}) => {
 
-    const dummyDetails = {
-        name: 'John Doe',
-        phone: '+91 1234567890',
-        email: 'johndoe@example.com',
-        address: '123 Main St, Anytown, USA',
-    }
-
+     
   return (
     <>
          
@@ -37,9 +36,9 @@ const ContactInfomation = () => {
       <div className="mb-3 flex items-center justify-between">
 
                 <p className='flex items-center justify-center gap-x-2'>
-                    <CiMobile2 className='text-2xl'/> <span>{dummyDetails.phone}</span> 
+                    <CiMobile2 className='text-2xl'/> <span>{phone}</span> 
                 </p>
-                <a href={`tel:${dummyDetails.phone}`} className='text-xl p-2 rounded-full bg-whitesmoke shadow'>
+                <a href={`tel:${phone}`} className='text-xl p-2 rounded-full bg-whitesmoke shadow'>
                 <IoCallOutline />
                 </a>
         
@@ -49,9 +48,9 @@ const ContactInfomation = () => {
       <div className="mb-3 flex items-center justify-between">
 
                 <p className='flex items-center justify-center gap-x-2'>
-                    <CiMail  className='text-2xl'/> <span>{dummyDetails.email}</span> 
+                    <CiMail  className='text-2xl'/> <span>{email}</span> 
                 </p>
-                <a href={`mailto:${dummyDetails.email}`} className='text-xl p-2 rounded-full bg-whitesmoke shadow'>
+                <a href={`mailto:${email}`} className='text-xl p-2 rounded-full bg-whitesmoke shadow'>
                 <LuSend  />
                 </a>
         

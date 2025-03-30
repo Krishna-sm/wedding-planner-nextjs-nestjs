@@ -13,6 +13,8 @@ interface Image{
 }
 @Schema({timestamps:true,versionKey:false})
 export class Service{
+    [x: string]: any;
+   
     
     @Prop({required:true,ref:'User',type:mongoose.Schema.Types.ObjectId})
     user:User;
@@ -42,6 +44,7 @@ export class Service{
     isAdminBlock:boolean
     @Prop({type:String,default:''})
     remark:string
+ 
 
 
 

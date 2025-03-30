@@ -1,8 +1,10 @@
 import { useSendEnqueryMutation } from '@/app/redux/queries/PublicQuery'
+import { UserSlicePath } from '@/app/redux/slices/UserSlice'
 import CustomButton from '@/components/CustomButton'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { useParams } from 'next/navigation'
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import Swal from 'sweetalert2'
 import * as yup from 'yup'
 const EnquieryForm = ({serviceId}) => {
@@ -10,11 +12,12 @@ const EnquieryForm = ({serviceId}) => {
 
     const [sendHandler,sendResponse] = useSendEnqueryMutation()
     const {service} = useParams()
+    const user = useSelector(UserSlicePath)
 
         const intialValues = {
-            name:'',
-            email:'',
-            phone:'',
+            name:user?.name||'',
+            email:user?.email||'',
+            phone:user?.phone_no||'',
             message:'' 
         }
 
@@ -61,7 +64,7 @@ const EnquieryForm = ({serviceId}) => {
                             </div>
                             <div className="form bg-white px-5 py-3 border">
                                 <div className="mb-3">
-                                    <label htmlFor="name">Name {serviceId} <span className="text-red-500">*</span> </label>
+                                    <label htmlFor="name">Name   <span className="text-red-500">*</span> </label>
                                     <Field name="name" id="name" className="w-full py-2 rounded border outline-none  px-4 bg-transparent"  placeholder="Enter Your Name"/>
                                     <ErrorMessage name='name' className='text-red-500 text-xs capitalize' component={'p'} />
                                 </div>

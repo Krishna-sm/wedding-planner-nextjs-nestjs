@@ -4,6 +4,7 @@ import {Service} from './Service.model'
 export type EnqueryDocument=  HydratedDocument<Enquery>;
 @Schema({versionKey:false,timestamps:true})
 export class Enquery{
+    [x: string]: unknown;
     @Prop({type:String,required:true,trim:true})
     name:string
     @Prop({type:String,required:true,trim:true})

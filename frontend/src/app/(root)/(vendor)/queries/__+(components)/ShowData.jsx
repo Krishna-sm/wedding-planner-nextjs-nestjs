@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableBody,
@@ -11,9 +12,28 @@ import {
 import { faker } from '@faker-js/faker';
 import { FaEye } from "react-icons/fa6";
 import ViewQuery from "./ViewQuery";
+import { useFetchAllEnquriesQuery } from "@/app/redux/queries/VendorQUery";
+import Loader from "@/components/Loader";
+import ErrorComponent from "@/components/ErrorComponent";
  
 
-export default function ShowData() {
+export default function ShowData({status='',search='',from=new Date(),to=new Date()}) {
+
+
+  const {isLoading,data,isError,error} = useFetchAllEnquriesQuery({status,search,from:from.getTime(),to:to.getTime()})
+  if(isLoading){
+    return <div className="min-h-screen flex items-center justify-center">
+      <Loader/>
+    </div>
+  }
+
+  if(isError){
+   return <div className="min-h-screen flex items-center justify-center">
+    {JSON.stringify(error)}
+    </div>
+  }
+ 
+
   return (
     <Table>
       <TableCaption>A list of your Queries.</TableCaption>
@@ -27,9 +47,13 @@ export default function ShowData() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {Array(10).fill(null).map((cur,i) => (
-          <Card key={i} />
-        ))}
+        {data && data.data && data.data.length>0 ? data.data.map((cur,i) => (
+          <Card key={i} data={cur} />
+        ))
+        :
+        <></>
+      
+      }
       </TableBody>
       <TableFooter>
         <TableRow>
@@ -41,16 +65,16 @@ export default function ShowData() {
   )
 }
 
- const Card =()=>{
+ const Card =({data})=>{
   return <>
-   <TableRow >
-            <TableCell className="font-medium">{faker.number.bigInt()}</TableCell>
-            <TableCell className="text-right">{faker.person.fullName()}</TableCell>
-            <TableCell className="text-right">{faker.science.unit().name}</TableCell>
-            <TableCell className="text-right">{faker.commerce.price()}</TableCell>
+   <TableRow > 
+            <TableCell className="font-medium">{data._id}</TableCell>
+            <TableCell className="text-right">{data.name}</TableCell>
+            <TableCell className="text-right">{data.service.title}</TableCell>
+            <TableCell className="text-right">{data.service.budget}</TableCell>
             <TableCell className="text-right">
             <div className="flex items-center justify-end w-full gap-x-2 ">
-                <ViewQuery/>
+                <ViewQuery id={data._id} />
             </div>
             </TableCell>
           </TableRow>

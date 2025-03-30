@@ -27,10 +27,6 @@ import { Enquery,EnquerySchema } from 'src/models/Enquery.model';
             schema:ProfileSchema
           },
           {
-            name:Profile.name,
-            schema:ProfileSchema
-          },
-          {
             name:Enquery.name,
             schema:EnquerySchema
           }

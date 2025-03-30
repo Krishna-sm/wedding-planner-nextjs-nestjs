@@ -10,3 +10,5 @@ export interface Image{
     uri:string 
     public_id:string
 }
+
+ 

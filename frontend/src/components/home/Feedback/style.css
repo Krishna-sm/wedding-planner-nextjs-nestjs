@@ -1,0 +1,28 @@
+#Feedbacksection .swiper {
+    width: 100%;
+    height: 100%;
+  }
+  
+  #Feedbacksection  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+  
+    /* Center slide text vertically */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+ 
+  #Feedbacksection  .swiper-slide {
+    width: 80%;
+  }
+  
+  #Feedbacksection  .swiper-slide:nth-child(2n) {
+    width: 60%;
+  }
+  
+  #Feedbacksection   .swiper-slide:nth-child(3n) {
+    width: 40%;
+  }
+  

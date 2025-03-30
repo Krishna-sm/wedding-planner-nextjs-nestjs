@@ -27,9 +27,30 @@ export class PaginationDTO{
  
     @IsOptional() 
     page:number 
+
+    @IsOptional() 
+    search:string 
+
+    @IsOptional() 
+    status?:string
+    @IsOptional() 
+    from?:number
+    @IsOptional() 
+    to?:number
 }
 
+export class VendorServiceIdDTO{
+    @IsNotEmpty({message:"Service is Required"})
+    @IsMongoId({message:"Shohuld be a valid ID"})
+    service:string
+}
 
+export class UpdateStatusDTO{
+    @IsNotEmpty({message:'Enter Valid Status'})
+    status:string;
+    @IsNotEmpty({message:'Enter Valid Remark'})
+    remark:string;
+}
 
 
 export class UpdateVendorServiceDTO{

@@ -15,9 +15,28 @@ import VerifiedData from '@/components/reuseable/VerifiedData'
 import moment from 'moment'
 import AttendQuery from './AttendQuery' 
 import ContactInfomation from './ContactInfomation'
-const ViewQuery = () => {
+import { useFetchEnquryByIdQuery } from '@/app/redux/queries/VendorQUery'
+import Loader from '@/components/Loader'
+import ErrorComponent from '@/components/ErrorComponent'
 
-  const status = 'COMPLETE'
+import DefaultPic from '@/assets/images/default_icon.avif'
+import  Image from 'next/image'
+
+const ViewQuery = ({id}) => {
+
+  const {data,isError,isLoading} = useFetchEnquryByIdQuery(id)
+
+    if(isLoading){
+        return  <Loader/>
+      }
+    
+      if(isError){
+       return  <ErrorComponent/>
+      }
+
+
+
+  // const status = 'COMPLETE'
 
   return (
     <>
@@ -29,48 +48,66 @@ const ViewQuery = () => {
   </SheetTrigger>
   <SheetContent>
     <SheetHeader>
-      <SheetTitle>Order ID #122245582</SheetTitle>
-      <SheetDescription className={` text-center py-3 ${status ==='PENDING'?'text-yellow-800 bg-yellow-100':
-        status ==='PROCESS'?'text-orange-700 bg-orange-100':status ==='COMPLETE'?'text-green-500 bg-green-100':'text-red-500 bg-red-100 '} capitalize`}>
-      {status}
+      <SheetTitle>Order ID #{data?.id}</SheetTitle>
+      <SheetDescription className={` text-center py-3 ${data.status ==='PENDING'?'text-yellow-800 bg-yellow-100':
+        data.status ==='PROCESS'?'text-orange-700 bg-orange-100':data.status ==='COMPLETE'?'text-green-500 bg-green-100':'text-red-500 bg-red-100 '} capitalize`}>
+      {data.status}
       </SheetDescription>
       <section className="mb-3   flex items-center justify-center py-10 flex-col  ">
     
-                    <div className="mb-3 w-[200px] h-2[200px] rounded-full object-cover overflow-hidden border-4 border-double border-indigo-500">
+                    {data.user_avatar ?<div className="mb-3 w-[200px] h-2[200px] rounded-full object-cover overflow-hidden border-4 border-double border-indigo-500">
                     <img
-                        src={faker.image.avatar()}
+                        src={data.user_avatar.uri}
+                        className='hover:scale-150 transition-all duration-300'
+                />
+                    </div>:
+                      <>
+                      <div className="mb-3 w-[200px] h-2[200px] rounded-full object-cover overflow-hidden border-4 border-double border-indigo-500">
+                    <Image
+                    width={1000}
+                    height={1000}
+                    alt="dasd"
+                        src={DefaultPic}
                         className='hover:scale-150 transition-all duration-300'
                 />
                     </div>
-                <h1 className='text-xl font-psmbold flex gap-x-2 items-center justify-center'>{faker.person.fullName()} <VerifiedData status={true} /> </h1>
+                      
+                      </>
+                    }
+                <h1 className='text-xl font-psmbold flex gap-x-2 items-center justify-center'>{data.name} <VerifiedData status={data.user_emailVerified ??false} /> </h1>
 
                 <div className="mb-3 text-center">
-                    <p className='text-sm'>Order Date: {moment(faker.date.past()).startOf('day').fromNow()  }</p>
+                    <p className='text-sm'>Order Date: {moment(data.date).startOf('day').fromNow()  }</p>
                 <div className="py-4 flex items-center justify-center">
-                <span className='text-2xl bg-indigo-600 text-white px-4 py-1 my-3  mx-auto font-pmedium  text-center'> &#8377;{Math.floor(faker.commerce.price())}</span> <ContactInfomation/>
+                <span className='text-2xl bg-indigo-600 text-white px-4 py-1 my-3  mx-auto font-pmedium  text-center'> &#8377;{data.budget}</span> <ContactInfomation 
+                address={data.address}
+                email={data.email}
+                name={data.name}
+                phone={data.phone}
+                />
                 </div>
                 </div>
 
                 <div id="no-scrollbar" className="mb-3 h-[40vh] overflow-auto">
                 <div className="mb-3 w-full px-4">
                       <p className="font-pmedium text-lg">Category </p>
-                      <p className='py-2 font-pregular'>Butiq Hall</p>
+                      <p className='py-2 font-pregular'>{data.category}</p>
                     </div>
 
                     <div className="mb-3 w-full px-4">
+                    <div className="mb-3 w-full px-4">
                       <p className="font-pmedium text-lg">Service </p>
+                      <p className='py-2 font-pregular'>{data.service}</p>
+                    </div>
 
-                        <ul className='list-decimal px-10'>
-                          <li className="py-2 font-pregular">Catering</li>
-                          <li className="py-2 font-pregular">Decoration</li>
-                          <li className="py-2 font-pregular">Photography</li>
-                          <li className="py-2 font-pregular">Transportation</li>
-                          <li className="py-2 font-pregular">Venue Setup</li>
-                        </ul>
+                    <div className="mb-3 w-full px-4">
+                      <p className="font-pmedium text-lg">Message </p>
+                      <p className='py-2 font-pregular'>{data.message}</p>
+                    </div>
 
 
                         <div className="mb-3 py-5">
-                      <AttendQuery/>
+                      <AttendQuery id={data.id} status={data.status} remark={data.remark} />
                         </div>
 
 

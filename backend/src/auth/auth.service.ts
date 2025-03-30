@@ -7,11 +7,19 @@ import { Profile } from 'src/models/Profile.model';
 import { JwtService } from '@nestjs/jwt';
 import {compare} from 'bcryptjs'
 import cloudinary from 'src/utils/Cloudiary';
+import { Category } from 'src/models/Category.model';
+import { Service } from 'src/models/Service.model';
+import { Enquery } from 'src/models/Enquery.model';
 
 @Injectable()
 export class AuthService {
 
-    constructor(@InjectModel(User.name) private UserModel:Model<User>, @InjectModel(Profile.name) private ProfileModel:Model<Profile>,    private jwtService: JwtService){}
+    constructor(@InjectModel(User.name) private UserModel:Model<User>, @InjectModel(Profile.name) private ProfileModel:Model<Profile>, 
+    @InjectModel(Category.name) private readonly CategoryModel:Model<Category>,
+            @InjectModel(Service.name) private readonly ServiceModel:Model<Service>,
+            @InjectModel(Enquery.name) private readonly EnqueryModel:Model<Enquery>,
+    
+    private jwtService: JwtService){}
     
     async registerUser(data:RegisterUserDTO){
 
@@ -64,7 +72,9 @@ export class AuthService {
 
 
     async UserProfile(id:string,role:string){
-        const profile ={}
+        const profile ={
+            dashboard:{}
+        }
         const user = await this.UserModel.findById(id)
             .select("name email role -_id");
 
@@ -87,9 +97,91 @@ export class AuthService {
 
         }
         
+        // dashboard
+        // for users
+        let data:any ={}
+        if(role==='user'){
+            data={
+                total_enquries:0
+            }
+            const toalEnqueries = await this.EnqueryModel.countDocuments({
+                email:user?.email
+            })
+           data ={
+                'total_enquries':toalEnqueries
+            }
+            profile['dashboard']=data
+        }
+        if(role=='vendor'){
+
+             data={
+                'total_services':0,
+                'total_enquries':0
+            }
+           const total_services= await this.ServiceModel.countDocuments({user:id})
+
+           data['total_services']=total_services
+
+           const all_enquries = await this.EnqueryModel.find({})
+           .populate("service","user")
+
+      
+         const total_enquries=  await Promise.all(all_enquries.filter(async(cur,i)=>{
+                return cur.service.user === (id as any)
+           }))
+
+           data['total_enquries']=total_enquries.length
+
+
+
+
+        }
+        if(role=='admin'){
+
+                data={
+                    'total_service':0,
+                    'total_categories':0,
+                    'total_vendors':0,
+                    'total_users':0,
+                    'total_enquries':0,
+                }
+
+
+                const toalEnqueries = await this.EnqueryModel.countDocuments()
+
+                data['total_enquries'] =toalEnqueries
+
+                const total_service = await this.ServiceModel.countDocuments()
+
+                data['total_service'] =total_service
+
+
+                
+                const total_vendors = await this.UserModel.countDocuments({
+                    role:'vendor'
+                })
+
+                data['total_vendors'] =total_vendors
+
+                const total_users = await this.UserModel.countDocuments({
+                 
+                })
+
+                data['total_users'] =total_users
+
+                const total_categories = await this.CategoryModel.countDocuments({
+                 
+                })
+
+                data['total_categories'] =total_categories
+
+
+                
+        }
+
 
  
-        return {...user?.toObject(),...profile}
+        return {...user?.toObject(),...profile,dashboard:data}
     }
 
 

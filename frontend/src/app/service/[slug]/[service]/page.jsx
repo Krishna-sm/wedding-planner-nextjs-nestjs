@@ -10,6 +10,9 @@ import { useGetServiceBySlugQuery } from '@/app/redux/queries/PublicQuery';
 import Loader from '@/components/Loader';
 import ErrorComponent from '@/components/ErrorComponent';
 import Link from 'next/link';
+import DefaultPic from '@/assets/images/default_icon.avif'
+import Image from 'next/image';
+
 
 const ServiceView = () => {
     const {slug,service} = useParams()
@@ -53,12 +56,13 @@ const ServiceView = () => {
                                <div className="mt-3">
                                 <div className="card border w-[98%] lg:w-[90%] mx-auto   rounded-sm py-4 flex items-start justify-between bg-white px-3 gap-x-3">
                                     <div className="w-[20%]">
-                                        <img src={data.user.avatar ||faker.image.avatar()} alt="" className=' rounded-full' />
-                                    </div>
+                                      
+                                        <Image alt="vendor image" width={1000} height={1000} src={data.user.avatar ||DefaultPic}  className=' rounded-full' />
+                                    </div> 
                                   {data.user &&  <div className=" w-full">
-                                            <h3>{data.user.name}</h3>
-                                            <h3 className='text-sm font-pmedium text-zinc-500'>{data.user.email}</h3>
-                                           {data.user.phone_no ? <a href={`tel:${data.user.phone_no}`} className="bg-logo w-full flex items-center justify-center gap-x-2 py-2 mt-3 text-white">
+                                            <h3>{data?.user?.name}</h3>
+                                            <h3 className='text-sm font-pmedium text-zinc-500'>{data?.user?.email}</h3>
+                                           {data?.user?.phone_no ? <a href={`tel:${data?.user?.phone_no}`} className="bg-logo w-full flex items-center justify-center gap-x-2 py-2 mt-3 text-white">
                                                 <span>Call Now</span>
                                                 <FaPhone className='text-xl'/>
                                             </a>: <>

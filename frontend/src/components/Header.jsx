@@ -1,53 +1,91 @@
 "use client";
-import Image from 'next/image'
-import React from 'react'
-import LogoImage from '@/assets/images/logo.png'
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
-import Link from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
-import { UserSlicePath } from '@/app/redux/slices/UserSlice';
-import { useMainContext } from '@/context/MainContext';
-import ProfileButton from './auth/ProfileButton';
-import { IoMdMenu } from "react-icons/io";
-import { toggleSidebar } from '@/app/redux/slices/SidebarSlice';
-import LogoComponent from './reuseable/LogoComponent';
-import { usePathname } from 'next/navigation';
-import { private_routes } from '@/utils/constant';
+import { IoMdMenu, IoMdClose } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { UserSlicePath } from "@/app/redux/slices/UserSlice";
+import { useMainContext } from "@/context/MainContext";
+import ProfileButton from "./auth/ProfileButton";
+import LogoComponent from "./reuseable/LogoComponent";
+import { usePathname } from "next/navigation";
+import { private_routes } from "@/utils/constant";
 
 const Header = () => {
+  const user = useSelector(UserSlicePath);
+  const { logoutHandler } = useMainContext();
+  const dispatch = useDispatch();
+  const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  const user = useSelector(UserSlicePath)
-  const {logoutHandler} = useMainContext()
-  const dispatch = useDispatch()
-  const pathame = usePathname()
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <>
-           <header className="text-gray-600 body-font">
-  <div className="container mx-auto flex  p-5  items-center">
-    <div className="flex items-center justify-center gap-x-2">
- {pathame && private_routes.includes(pathame)&&   <button onClick={()=>dispatch(toggleSidebar())} className='text-3xl text-black lg:hidden'> 
-    <IoMdMenu/> </button>}
-        <LogoComponent/> 
-    </div>
-    <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
-      <Link href={'/'} className="mr-5 text-black hover:text-gray-900">Home</Link> 
-    </nav>
-   {
-    user && user.email ?
- 
-      <ProfileButton/>
-    :
- <Link href={'/login'} className=" outline-none border-none px-6 py-3 font-pmedium bg-indigo-500 cursor-pointer text-white rounded-sm flex items-center justify-center gap-x-2">
- <span>Login</span> <FaArrowRight/>
+    <header className={`fixed top-0 left-0 w-full z-50 transition-all ${isScrolled ? "bg-white" : "bg-whitesmoke"}`}>
+      <div className="container mx-auto flex items-center justify-between p-5">
+        {/* Logo & Mobile Menu Button */}
+        <div className="flex items-center gap-x-2">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="text-3xl text-black lg:hidden"
+          >
+            {mobileMenuOpen ? <IoMdClose /> : <IoMdMenu />}
+          </button>
+          <LogoComponent />
+        </div>
 
-</Link>
-   }
-  </div>
-</header>
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center space-x-6">
+          <NavLink href="/" label="Home" />
+          <NavLink href="/about" label="About" />
+        </nav>
 
-    </>
-  )
-}
+        {/* Auth Section */}
+        {user && user.email ? (
+          <ProfileButton />
+        ) : (
+          <Link
+            href="/login"
+            className="px-6 py-3 bg-indigo-500 text-white rounded-sm flex items-center gap-x-2"
+          >
+            <span>Login</span> <FaArrowRight />
+          </Link>
+        )}
+      </div>
 
-export default Header
+      {/* Mobile Sidebar */}
+      <div
+        className={`fixed inset-0 bg-transparent bg-opacity-50 transition-opacity lg:hidden ${
+          mobileMenuOpen ? "block" : "hidden"
+        }`}
+        onClick={() => setMobileMenuOpen(false)}
+      ></div>
+      <aside
+        className={`fixed top-0 left-0 h-full w-64 bg-white transform transition-transform lg:hidden ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="p-5 flex flex-col space-y-6">
+          <NavLink href="/" label="Home" />
+          <NavLink href="/about" label="About" />
+        </div>
+      </aside>
+    </header>
+  );
+};
+
+// Reusable NavLink Component
+const NavLink = ({ href, label }) => (
+  <Link href={href} className="text-black hover:text-gray-900 flex items-center gap-x-2">
+    {label}
+  </Link>
+);
+
+export default Header;

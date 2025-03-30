@@ -15,11 +15,9 @@ import {
 
 export default function ShowQueriesonRange({
   className,
+  date, setDate
 }) {
-  const [date, setDate] = React.useState({
-    from: new Date(),
-    to: new Date(),
-  })
+  
 
   return (
     <div className={cn("w-full", className)}>

@@ -82,7 +82,8 @@ export const VendorServiceQuery = createApi({
             }
         }),
         invalidatesTags:['get-by-id','get-all']
-      })
+      }),
+     
       
     }),
   })

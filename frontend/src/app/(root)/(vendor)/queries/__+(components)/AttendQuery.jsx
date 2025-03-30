@@ -14,21 +14,33 @@ import {
 import { ErrorMessage, Field, Formik } from 'formik'
 import CustomButton from '@/components/CustomButton'
 import { StatusArray } from '@/utils/constant.vendor';
-   
-const AttendQuery = () => {
+import { useUpdateEnqueryByIdMutation } from '@/app/redux/queries/VendorQUery';
+   import {toast} from 'react-toastify'
+const AttendQuery = ({status,remark,id}) => {
+  const [updateFn,UpdateFnResponse] = useUpdateEnqueryByIdMutation()
 
     const initialValues={
-        'status':'PENDING',
-        'reason':'',
+        'status':status,
+        'remark':remark,
     }
     const validationSchema = yup.object({
         status: yup.string().required('Status is required')
         .oneOf(StatusArray),
-        reason: yup.string().required('Reason is required'),
+        remark: yup.string().required('Reason is required'),
     })
-    const onSubmitHandler =()=>{
-        // your code to update status and reason
-        console.log("values",values)
+    const onSubmitHandler =async(value,helpers)=>{
+      try{
+
+        const {data,error} = await updateFn({id,data:value})
+        if(error){
+          throw new Error(error.message)
+        }
+        toast.success(data.msg)
+
+      }
+      catch(e){
+        toast.error(e.message)
+      }
     }
 
   return (
@@ -56,12 +68,12 @@ const AttendQuery = () => {
     </div>
     <div className="mb-3">
         <label htmlFor="status">Update Reason</label>
-        <Field as="textarea" name="reason" rows="4" className="w-full px-4 py-2 bg-gray-100 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Reason for updating status" />
-    <ErrorMessage className='text-sm text-red-500' name='reason' component={'p'} />
+        <Field as="textarea" name="remark" rows="4" className="w-full px-4 py-2 bg-gray-100 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Reason for updating status" />
+    <ErrorMessage className='text-sm text-red-500' name='remark' component={'p'} />
 
     </div>
     <div className="mb-3">
-        <CustomButton label={'Update Status'} />
+        <CustomButton label={'Update Status'} isLoading={UpdateFnResponse.isLoading} />
     </div>
         </form>
     )}
